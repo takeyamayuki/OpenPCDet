@@ -47,7 +47,7 @@ def draw_scenes(points, gt_boxes=None, ref_boxes=None, ref_labels=None, ref_scor
     vis = open3d.visualization.Visualizer()
     vis.create_window()
 
-    vis.get_render_option().point_size = 5.0
+    vis.get_render_option().point_size = 1.0
     vis.get_render_option().background_color = np.zeros(3)
 
     # draw origin
@@ -89,8 +89,6 @@ def translate_boxes_to_open3d_instance(gt_boxes):
           2 -------- 0
     """
     center = gt_boxes[0:3]
-    print("[INFO] bounding box center coodinate: ", end='')
-    print(center)
     lwh = gt_boxes[3:6]
     axis_angles = np.array([0, 0, gt_boxes[6] + 1e-10])
     rot = open3d.geometry.get_rotation_matrix_from_axis_angle(axis_angles)
@@ -114,8 +112,12 @@ def draw_box(vis, gt_boxes, color=(0, 1, 0), ref_labels=None, score=None):
             line_set.paint_uniform_color(color)
         else:
             line_set.paint_uniform_color(box_colormap[ref_labels[i]])
-        print("[INFO] detected object(0~3): ", end='')
+
+        print('***')
+        print("[INFO] detected object: ", end='')
         print(ref_labels[i].item())
+        print("[INFO] bounding box center coodinate: ", end='')
+        print(gt_boxes[i][0:3])
         print("[INFO] detected scores: ", end='')
         print(score[i].item())
 

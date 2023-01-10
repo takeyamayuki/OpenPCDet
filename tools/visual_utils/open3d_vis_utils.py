@@ -9,10 +9,10 @@ import matplotlib
 import numpy as np
 
 box_colormap = [
-    [1, 1, 1],
-    [0, 1, 0],
-    [0, 1, 1],
-    [1, 1, 0],
+    [1, 1, 1],  # none
+    [0, 1, 0],  # car
+    [0, 1, 1],  # pedestrian=2
+    [1, 1, 0],  # cyclist
 ]
 
 
@@ -28,7 +28,8 @@ def get_coor_colors(obj_labels):
     max_color_num = obj_labels.max()
 
     color_list = list(colors)[:max_color_num+1]
-    colors_rgba = [matplotlib.colors.to_rgba_array(color) for color in color_list]
+    colors_rgba = [matplotlib.colors.to_rgba_array(
+        color) for color in color_list]
     label_rgba = np.array(colors_rgba)[obj_labels]
     label_rgba = label_rgba.squeeze()[:, :3]
 
@@ -51,7 +52,8 @@ def draw_scenes(points, gt_boxes=None, ref_boxes=None, ref_labels=None, ref_scor
 
     # draw origin
     if draw_origin:
-        axis_pcd = open3d.geometry.TriangleMesh.create_coordinate_frame(size=1.0, origin=[0, 0, 0])
+        axis_pcd = open3d.geometry.TriangleMesh.create_coordinate_frame(
+            size=1.0, origin=[0, 0, 0])
         vis.add_geometry(axis_pcd)
 
     pts = open3d.geometry.PointCloud()
@@ -59,7 +61,8 @@ def draw_scenes(points, gt_boxes=None, ref_boxes=None, ref_labels=None, ref_scor
 
     vis.add_geometry(pts)
     if point_colors is None:
-        pts.colors = open3d.utility.Vector3dVector(np.ones((points.shape[0], 3)))
+        pts.colors = open3d.utility.Vector3dVector(
+            np.ones((points.shape[0], 3)))
     else:
         pts.colors = open3d.utility.Vector3dVector(point_colors)
 
@@ -68,6 +71,8 @@ def draw_scenes(points, gt_boxes=None, ref_boxes=None, ref_labels=None, ref_scor
 
     if ref_boxes is not None:
         vis = draw_box(vis, ref_boxes, (0, 1, 0), ref_labels, ref_scores)
+
+    # print(ref_labels, ref_scores)
 
     vis.run()
     vis.destroy_window()
@@ -84,6 +89,8 @@ def translate_boxes_to_open3d_instance(gt_boxes):
           2 -------- 0
     """
     center = gt_boxes[0:3]
+    print("[INFO] bounding box center coodinate: ", end='')
+    print(center)
     lwh = gt_boxes[3:6]
     axis_angles = np.array([0, 0, gt_boxes[6] + 1e-10])
     rot = open3d.geometry.get_rotation_matrix_from_axis_angle(axis_angles)
@@ -107,6 +114,10 @@ def draw_box(vis, gt_boxes, color=(0, 1, 0), ref_labels=None, score=None):
             line_set.paint_uniform_color(color)
         else:
             line_set.paint_uniform_color(box_colormap[ref_labels[i]])
+        print("[INFO] detected object(0~3): ", end='')
+        print(ref_labels[i].item())
+        print("[INFO] detected scores: ", end='')
+        print(score[i].item())
 
         vis.add_geometry(line_set)
 

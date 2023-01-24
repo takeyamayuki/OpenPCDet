@@ -1,7 +1,8 @@
 DATASET: 'KittiDataset'
 DATA_PATH: '../data/kitti'
 
-POINT_CLOUD_RANGE: [0, -40, -3, 70.4, 40, 1]
+# index; 0:min_x, 1:min_y, 3:max_x, 4:max_y
+POINT_CLOUD_RANGE: [0, -10, -3, 120, 10, 1]
 
 DATA_SPLIT: {
     'train': train,

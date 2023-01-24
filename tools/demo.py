@@ -1,6 +1,7 @@
 import argparse
 import glob
 from pathlib import Path
+import open3d as o3d
 
 try:
     import open3d
@@ -102,6 +103,16 @@ def main():
                 points=data_dict['points'][:, 1:], ref_boxes=pred_dicts[0]['pred_boxes'],
                 ref_scores=pred_dicts[0]['pred_scores'], ref_labels=pred_dicts[0]['pred_labels']
             )
+
+            
+            # print(data_dict['points'][:, 1:])
+
+            # x = data_dict['points'][:, 1:4].to('cpu').detach().numpy().copy()
+            # print(x, x.shape)
+            # pcd = o3d.geometry.PointCloud()
+            # pcd.points = o3d.utility.Vector3dVector(x)
+            # o3d.visualization.draw_geometries([pcd])
+
 
             if not OPEN3D_FLAG:
                 mlab.show(stop=True)
